@@ -19,6 +19,10 @@ struct bloc{
     uchar& operator [] (long n){return (ptr)[(n%size+size)%size];}
     const uchar& operator [] (long n) const {return (ptr)[(n%size+size)%size];}
 
+    void destroy(){
+        delete [] ptr;
+    }
+
     static bloc copy(bloc& b){
         bloc ret(b.size);
         memcpy(ret,b,b.size);
@@ -30,3 +34,5 @@ struct bloc{
         return bloc(ptr,b.size);
     }
 };
+
+#undef uchar
