@@ -38,5 +38,5 @@ STD(float)  STD(double)
 
 template<typename...Ts>
 void print(Ts...args){
-    (std::cout<<...<<tostr(args));
+    (std::cout<<...<<tostr(args))<<std::endl;
 }
