@@ -1,7 +1,9 @@
 #pragma once
 #include <cstring>
+#include <cinttypes>
 
 #define uchar unsigned char
+typedef uint64_t hash_t;
 
 struct bloc{
     uchar* ptr=NULL;
@@ -32,6 +34,16 @@ struct bloc{
         uchar* ptr=new uchar[b.size];
         memcpy(ptr,b,b.size);
         return bloc(ptr,b.size);
+    }
+
+    const hash_t hash(){
+        hash_t h=0;
+        uchar off=0;
+        for(size_t n=0;n<size;n++){
+            h^=((hash_t)ptr[n])<<off;
+            off=(off+8)%57;
+        }
+        return h;
     }
 };
 
