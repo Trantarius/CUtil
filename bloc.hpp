@@ -1,7 +1,10 @@
 #pragma once
-#include "util.hpp"
+#include <cinttypes>
+#include <cstdint>
 #include <cstring>
 
+#define uchar uint8_t
+#define u64 uint64_t
 
 struct bloc{
     uchar* ptr=NULL;
@@ -43,3 +46,6 @@ struct bloc{
         return h;
     }
 };
+
+#undef uchar
+#undef u64
