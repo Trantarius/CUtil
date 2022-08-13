@@ -15,7 +15,9 @@ typedef u_char uchar;
 using std::string;
 
 template<typename T>
-string tostr(T a);
+string tostr(T a){
+    return (string)a;
+}
 
 template <> inline string tostr(string& a){
    return a;
