@@ -47,3 +47,19 @@ template<typename...Ts>
 void print(Ts...args){
     (std::cout<<...<<tostr(args))<<std::endl;
 }
+
+inline string size_format(size_t size){
+    if(size>1000L*1000L*1000l*1000L*10L){
+        return std::to_string(size/(1000L*1000L*1000l*1000L))+" TB";
+    }
+    if(size>1000L*1000L*1000l*10L){
+        return std::to_string(size/(1000L*1000L*1000l))+" GB";
+    }
+    if(size>1000L*1000L*10L){
+        return std::to_string(size/(1000L*1000L))+" MB";
+    }
+    if(size>1000L*10L){
+        return std::to_string(size/(1000L))+" KB";
+    }
+    return std::to_string(size)+" B";
+}
