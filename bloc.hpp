@@ -36,7 +36,7 @@ struct bloc{
         return bloc(ptr,b.size);
     }
 
-    const hash_t hash(){
+    hash_t hash() const{
         hash_t h=0;
         uchar off=0;
         for(size_t n=0;n<size;n++){
