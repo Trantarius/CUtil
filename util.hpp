@@ -63,3 +63,40 @@ inline string size_format(size_t size){
     }
     return std::to_string(size)+" B";
 }
+
+inline string hexstr(u64 n){
+    char cstr[17];
+    cstr[16]='\0';
+    static const char hexdigits[]{'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+    for(u8 off=0;off<64;off+=4){
+        cstr[off/4]=hexdigits[(n>>off)&0xf];
+    }
+    return string(cstr);
+}
+inline string hexstr(u32 n){
+    char cstr[9];
+    cstr[8]='\0';
+    static const char hexdigits[]{'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+    for(u8 off=0;off<32;off+=4){
+        cstr[off/4]=hexdigits[(n>>off)&0xf];
+    }
+    return string(cstr);
+}
+inline string hexstr(u16 n){
+    char cstr[5];
+    cstr[4]='\0';
+    static const char hexdigits[]{'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+    for(u8 off=0;off<16;off+=4){
+        cstr[off/4]=hexdigits[(n>>off)&0xf];
+    }
+    return string(cstr);
+}
+inline string hexstr(u8 n){
+    char cstr[3];
+    cstr[2]='\0';
+    static const char hexdigits[]{'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+    for(u8 off=0;off<8;off+=4){
+        cstr[off/4]=hexdigits[(n>>off)&0xf];
+    }
+    return string(cstr);
+}
