@@ -22,7 +22,7 @@ public:
             return std::to_string(int(t*1000000000))+" ns";
         }
         if(t<10.0/1000){
-            return std::to_string(int(t*1000000))+" us";
+            return std::to_string(int(t*1000000))+" μs";
         }
         if(t<10.0/1){
             return std::to_string(int(t*1000))+" ms";
