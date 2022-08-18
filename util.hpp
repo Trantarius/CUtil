@@ -71,7 +71,7 @@ inline string size_format(size_t size){
 inline string hexstr(u8 n){
     char cstr[3];
     cstr[2]='\0';
-    static const char hexdigits[]{'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+    static const char hexdigits[]{'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
     cstr[0]=hexdigits[n>>4];
     cstr[1]=hexdigits[n&0xf];
     return string(cstr);
