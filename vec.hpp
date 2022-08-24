@@ -9,6 +9,7 @@ class vec{
     T* data;
     size_t _size;
 public:
+
     vec(size_t n):data(new T[n]),_size(n){}
     template<typename...Ts>
     vec(T a,T b,Ts...cs):data(new T[sizeof...(cs)+2]{a,b,cs...}),_size(sizeof...(cs)+2){}
