@@ -38,7 +38,7 @@ if(n<0||n>=_size){\
     }
 #undef BOUNDS_CHECK
 
-    vec<T>& operator = (const vec& b){
+    vec<T>& operator = (const vec<T>& b){
 #ifdef VEC_DEBUG
         if(_size!=b._size){
             throw std::logic_error("vec size mismatch: "+std::to_string(_size)+" vs "+std::to_string(b._size));
@@ -55,6 +55,13 @@ if(n<0||n>=_size){\
             ret[n] = (B)(data[n]);
         }
         return ret;
+    }
+
+    vec<T> fill(T a){
+        for(size_t n=0;n<_size;n++){
+            data[n]=a;
+        }
+        return *this;
     }
 
     T* operator &(){return data;}
