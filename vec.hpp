@@ -48,6 +48,15 @@ if(n<0||n>=_size){\
         return *this;
     }
 
+    template<typename B>
+    vec<B> as(){
+        vec<B> ret(_size);
+        for(size_t n=0;n<_size;n++){
+            ret[n] = (B)(data[n]);
+        }
+        return ret;
+    }
+
     T* operator &(){return data;}
     const T* operator &() const{return data;}
 
@@ -109,6 +118,7 @@ BIOP(+)
 BIOP(-)
 BIOP(*)
 BIOP(/)
+BIOP(%)
 BIOP(&)
 BIOP(|)
 BIOP(^)
