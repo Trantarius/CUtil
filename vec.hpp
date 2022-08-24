@@ -38,13 +38,14 @@ if(n<0||n>=_size){\
     }
 #undef BOUNDS_CHECK
 
-    void operator = (const vec& b){
+    vec<T>& operator = (const vec& b){
 #ifdef VEC_DEBUG
         if(_size!=b._size){
             throw std::logic_error("vec size mismatch: "+std::to_string(_size)+" vs "+std::to_string(b._size));
         }
 #endif
         memcpy(data,b.data,sizeof(T)*_size);
+        return *this;
     }
 
     T* operator &(){return data;}
@@ -117,6 +118,28 @@ BIOP(&&)
 BIOP(||)
 #undef BIOP
 
+#define EQOP(OP)                                                   \
+template<typename T>                                               \
+vec<T>& operator OP (vec<T>& a,const vec<T>& b){                   \
+    SIZE_CHECK                                                     \
+    for(size_t n=0;n<a.size();n++){                                \
+        a[n] OP b[n];                                              \
+    }                                                              \
+    return a;                                                      \
+}
+
+EQOP(+= )
+EQOP(-= )
+EQOP(*= )
+EQOP(/= )
+EQOP(%= )
+EQOP(&= )
+EQOP(|= )
+EQOP(^= )
+EQOP(<<=)
+EQOP(>>=)
+#undef EQOP
+
 template<typename T>
 bool operator == (const vec<T>& a,const vec<T>& b){
     SIZE_CHECK
@@ -155,3 +178,9 @@ T len(const vec<T>& a){
 }
 
 #undef SIZE_CHECK
+
+using fvec = vec<float>;    using dvec = vec<double>;
+using cvec = vec<char>;     using ucvec = vec<u_char>;
+using svec = vec<short>;    using usvec = vec<ushort>;
+using ivec = vec<int>;      using uivec = vec<uint>;
+using lvec = vec<long>;     using ulvec = vec<ulong>;
