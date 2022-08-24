@@ -8,7 +8,6 @@ template<typename T>
 class vec{
     T* data;
     size_t _size;
-    vec(){}
 public:
     vec(size_t n):data(new T[n]),_size(n){}
     template<typename A,typename B,typename...Cs>
@@ -52,6 +51,22 @@ if(n<0||n>=_size){\
     const T* operator &() const{return data;}
 
     inline size_t size() const {return _size;}
+
+    static vec<T>* new_array(size_t size,size_t count){
+        char* cptr=new char[(size*sizeof(T)+sizeof(vec<T>))*count];
+        vec<T>* vptr=(vec<T>*)cptr;
+        T* eptr=(T*)(cptr+sizeof(vec<T>)*count);
+        for(size_t n=0;n<count;n++){
+            vptr[n].data=eptr;
+            vptr[n]._size=size;
+            eptr+=size;
+        }
+        return vptr;
+    }
+
+    static void delete_array(vec<T>* ptr){
+        delete [] (char*)(ptr);
+    }
 };
 
 #define UOP(OP)                            \
