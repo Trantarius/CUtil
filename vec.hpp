@@ -135,6 +135,36 @@ BIOP(&&)
 BIOP(||)
 #undef BIOP
 
+template<typename T>
+vec<T> operator * (const vec<T>& a,T b){
+    vec<T> ret(a.size());
+    for(size_t n=0;n<a.size();n++){
+        ret[n] = a[n] * b;
+    }
+    return ret;
+}
+template<typename T>
+vec<T> operator * (T b,const vec<T>& a){
+    return a*b;
+}
+
+template<typename T>
+vec<T> operator / (const vec<T>& a,T b){
+    vec<T> ret(a.size());
+    for(size_t n=0;n<a.size();n++){
+        ret[n] = a[n] / b;
+    }
+    return ret;
+}
+template<typename T>
+vec<T> operator / (T b,const vec<T>& a){
+    vec<T> ret(a.size());
+    for(size_t n=0;n<a.size();n++){
+        ret[n] = b / a[n];
+    }
+    return ret;
+}
+
 #define EQOP(OP)                                                   \
 template<typename T>                                               \
 vec<T>& operator OP (vec<T>& a,const vec<T>& b){                   \
@@ -156,6 +186,21 @@ EQOP(^= )
 EQOP(<<=)
 EQOP(>>=)
 #undef EQOP
+
+template<typename T>
+vec<T>& operator *= (vec<T>& a,T b){
+    for(size_t n=0;n<a.size();n++){
+        a[n] *= b;
+    }
+    return a;
+}
+template<typename T>
+vec<T>& operator /= (vec<T>& a,T b){
+    for(size_t n=0;n<a.size();n++){
+        a[n] /= b;
+    }
+    return a;
+}
 
 template<typename T>
 bool operator == (const vec<T>& a,const vec<T>& b){
