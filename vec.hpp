@@ -51,7 +51,7 @@ if(n<0||n>=_size){\
     T* operator &(){return data;}
     const T* operator &() const{return data;}
 
-    inline size_t size(){return _size;}
+    inline size_t size() const {return _size;}
 };
 
 #define UOP(OP)                            \
