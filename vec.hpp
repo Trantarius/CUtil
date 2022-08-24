@@ -10,8 +10,8 @@ class vec{
     size_t _size;
 public:
     vec(size_t n):data(new T[n]),_size(n){}
-    template<typename A,typename B,typename...Cs>
-    vec(A a,B b,Cs...cs):data(new T[sizeof...(cs)+2]{a,b,cs...}),_size(sizeof...(cs)+2){}
+    template<typename...Ts>
+    vec(T a,T b,Ts...cs):data(new T[sizeof...(cs)+2]{a,b,cs...}),_size(sizeof...(cs)+2){}
     vec(const vec& b):data(new T[b._size]),_size(b._size){
         memcpy(data,b.data,sizeof(T)*_size);
     }

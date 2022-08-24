@@ -2,6 +2,7 @@
 #include "timer.hpp"
 #include "bloc.hpp"
 #include "io.hpp"
+#include "vec.hpp"
 #include <iostream>
 #include <string>
 #include <cinttypes>
