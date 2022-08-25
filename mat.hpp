@@ -183,7 +183,7 @@ template<typename T>
 vec<T> operator *(const vec<T>& a,const mat<T>& b){
 #ifdef MAT_DEBUG
     if(a.size()!=b.rows()){
-        throw std::logic_error("vec*mat size mismatch: "+std::to_string(b.size())+" * "+std::to_string(a.rows())+"x"+std::to_string(a.cols()));
+        throw std::logic_error("vec*mat size mismatch: "+std::to_string(a.size())+" * "+std::to_string(b.rows())+"x"+std::to_string(b.cols()));
     }
 #endif
     vec<T> ret(a.cols());
