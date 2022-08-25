@@ -84,6 +84,18 @@ public:
     static void delete_array(mat<T>* ptr){
         delete [] (char*)(ptr);
     }
+
+    operator std::string(){
+        std::string ret;
+        for(size_t n=0;n<rows();n++){
+            ret+="[ ";
+            for(size_t m=0;m<cols();m++){
+                ret+=tostr(data[n*_rows+m])+" ";
+            }
+            ret+="]\n";
+        }
+        return ret;
+    }
 };
 
 
