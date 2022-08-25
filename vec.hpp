@@ -1,6 +1,7 @@
 #pragma once
 #include <cstring>
 #include <stdexcept>
+#include "strings.hpp"
 
 #define VEC_DEBUG
 
@@ -84,6 +85,16 @@ if(n<0||n>=_size){\
 
     static void delete_array(vec<T>* ptr){
         delete [] (char*)(ptr);
+    }
+
+    operator std::string(){
+        std::string ret="( ";
+        for(size_t n=0;n<size();n++){
+            ret+=tostr(data[n]);
+            ret+=" ";
+        }
+        ret+=")";
+        return ret;
     }
 };
 

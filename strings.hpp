@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include "typedefs.hpp"
 
 using std::string;
 
