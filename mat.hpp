@@ -201,7 +201,7 @@ mat<T> operator *(const mat<T>& a,T b){
     mat<T> ret(a.rows(),a.cols());
     for(size_t n=0;n<a.rows();n++){
         for(size_t m=0;m<a.cols();m++){
-            ret[n][m]*=b;
+            ret[n][m]=a[n][m]*b;
         }
     }
     return ret;
