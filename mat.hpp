@@ -29,14 +29,17 @@ public:
         return data+r*_cols;
     }
 
-    static mat<T> identity(size_t s){
-        mat<T> ret(s);
-        for(size_t n=0;n<s;n++){
-            for(size_t m=0;m<s;m++){
+    static mat<T> identity(size_t r,size_t c){
+        mat<T> ret(r,c);
+        for(size_t n=0;n<r;n++){
+            for(size_t m=0;m<c;m++){
                 ret[n][m]=(char)(n==m);
             }
         }
         return ret;
+    }
+    static mat<T> identity(size_t s){
+        return identity(s,s);
     }
 
     mat<T>& operator = (const mat<T>& b){
