@@ -151,7 +151,7 @@ mat<T> operator *(const mat<T>& a,const mat<T>& b){
 }
 
 template<typename T>
-mat<T> operator *(const mat<T>& a,const vec<T>& b){
+vec<T> operator *(const mat<T>& a,const vec<T>& b){
 #ifdef MAT_DEBUG
     if(a.cols()!=b.size()){
         throw std::logic_error("mat*vec size mismatch: "+std::to_string(a.rows())+"x"+std::to_string(a.cols())+" * "+std::to_string(b.size()));
@@ -168,7 +168,7 @@ mat<T> operator *(const mat<T>& a,const vec<T>& b){
 }
 
 template<typename T>
-mat<T> operator *(const vec<T>& a,const mat<T>& b){
+vec<T> operator *(const vec<T>& a,const mat<T>& b){
 #ifdef MAT_DEBUG
     if(a.size()!=b.rows()){
         throw std::logic_error("vec*mat size mismatch: "+std::to_string(b.size())+" * "+std::to_string(a.rows())+"x"+std::to_string(a.cols()));
