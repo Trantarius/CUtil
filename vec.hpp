@@ -41,11 +41,9 @@ if(n<0||n>=_size){\
 #undef BOUNDS_CHECK
 
     vec<T>& operator = (const vec<T>& b){
-#ifdef VEC_DEBUG
-        if(_size!=b._size){
-            throw std::logic_error("vec size mismatch: "+std::to_string(_size)+" vs "+std::to_string(b._size));
-        }
-#endif
+        delete [] data;
+        _size=b.size();
+        data=new T[_size];
         memcpy(data,b.data,sizeof(T)*_size);
         return *this;
     }
