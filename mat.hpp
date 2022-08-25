@@ -186,10 +186,10 @@ vec<T> operator *(const vec<T>& a,const mat<T>& b){
         throw std::logic_error("vec*mat size mismatch: "+std::to_string(a.size())+" * "+std::to_string(b.rows())+"x"+std::to_string(b.cols()));
     }
 #endif
-    vec<T> ret(a.cols());
-    for(size_t m=0;m<a.cols();m++){
+    vec<T> ret(b.cols());
+    for(size_t m=0;m<b.cols();m++){
         ret[m]=0;
-        for(size_t i=0;i<a.cols();i++){
+        for(size_t i=0;i<b.cols();i++){
             ret[m]+=a[i]*b[i][m];
         }
     }
