@@ -22,6 +22,10 @@ template <> inline string tostr(char a){
     return std::to_string((int)a);
 }
 
+template <> inline string tostr(bool b){
+    return b?"true":"false";
+}
+
 
 #define STD(type) \
 template <> inline string tostr(type a){ \
