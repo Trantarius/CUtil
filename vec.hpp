@@ -3,13 +3,31 @@
 #include <stdexcept>
 #include "strings.hpp"
 
-#define VEC_DEBUG
+#ifdef VEC_OPTIMIZE
+#pragma GCC push_options
+#pragma GCC optimize ("O3")
+#endif
+
 
 template<typename T>
 class vec{
     T* data;
     size_t _size;
 public:
+    static constexpr bool debug_enabled(){
+#ifdef VEC_DEBUG
+        return true;
+#else
+        return false;
+#endif
+    }
+    static constexpr bool optimize_enabled(){
+#ifdef VEC_OPTIMIZE
+        return true;
+#else
+        return false;
+#endif
+    }
 
     vec(size_t n):data(new T[n]),_size(n){}
     template<typename...Ts>
@@ -258,3 +276,7 @@ using cvec = vec<char>;     using ucvec = vec<u_char>;
 using svec = vec<short>;    using usvec = vec<ushort>;
 using ivec = vec<int>;      using uivec = vec<uint>;
 using lvec = vec<long>;     using ulvec = vec<ulong>;
+
+#ifdef VEC_OPTIMIZE
+#pragma GCC pop_options
+#endif
