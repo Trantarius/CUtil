@@ -1,7 +1,10 @@
 #pragma once
 #include "vec.hpp"
 
-#define MAT_DEBUG
+#ifdef MAT_OPTIMIZE
+#pragma GCC push_options
+#pragma GCC optimize ("O3")
+#endif
 
 template<typename T>
 class mat{
@@ -9,7 +12,42 @@ class mat{
     size_t _rows;
     size_t _cols;
 
+    struct mat_row_access{
+        T* ptr;
+        size_t limit;
+        T& operator[](size_t n){
+            if(n>limit){
+                throw std::logic_error("mat idx out of bounds");
+            }
+            return ptr[n];
+        }
+    };
+
+    struct const_mat_row_access{
+        const T* ptr;
+        size_t limit;
+        const T& operator[](size_t n) const{
+            if(n>limit){
+                throw std::logic_error("mat idx out of bounds");
+            }
+            return ptr[n];
+        }
+    };
+
 public:
+    static constexpr bool debug_enabled=
+#ifdef MAT_DEBUG
+        true;
+#else
+        false;
+#endif
+    static constexpr bool optimize_enabled=
+#ifdef MAT_OPTIMIZE
+        true;
+#else
+        false;
+#endif
+
     mat(size_t r,size_t c):data(new T[r*c]),_rows(r),_cols(c){}
     mat(size_t s):mat(s,s){}
     template<typename...Ts>
@@ -21,13 +59,33 @@ public:
     ~mat(){
         delete [] data;
     }
-
+#ifdef MAT_DEBUG
+    mat_row_access operator[](size_t r){
+        if(r>_rows){
+            throw std::logic_error("mat idx out of bounds");
+        }
+        mat_row_access ret;
+        ret.ptr=data+r*_cols;
+        ret.limit=_cols;
+        return ret;
+    }
+    const_mat_row_access operator[](size_t r) const{
+        if(r>_rows){
+            throw std::logic_error("mat idx out of bounds");
+        }
+        const_mat_row_access ret;
+        ret.ptr=data+r*_cols;
+        ret.limit=_cols;
+        return ret;
+    }
+#else
     T* operator[](size_t r){
         return data+r*_cols;
     }
     const T* operator[](size_t r) const {
         return data+r*_cols;
     }
+#endif
 
     static mat<T> identity(size_t r,size_t c){
         mat<T> ret(r,c);
@@ -69,7 +127,7 @@ public:
 
     static mat<T>* new_array(size_t r,size_t c,size_t count){
         char* cptr=new char[(r*c*sizeof(T)+sizeof(mat<T>))*count];
-        vec<T>* mptr=(mat<T>*)cptr;
+        mat<T>* mptr=(mat<T>*)cptr;
         T* eptr=(T*)(cptr+sizeof(mat<T>)*count);
         for(size_t n=0;n<count;n++){
             mptr[n].data=eptr;
@@ -236,3 +294,8 @@ bool operator != (const mat<T>& a,const mat<T>& b){
 }
 
 using fmat = mat<float>;    using dmat = mat<double>;
+
+
+#ifdef MAT_OPTIMIZE
+#pragma GCC pop_options
+#endif

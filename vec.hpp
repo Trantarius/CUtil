@@ -14,20 +14,18 @@ class vec{
     T* data;
     size_t _size;
 public:
-    static constexpr bool debug_enabled(){
+    static constexpr bool debug_enabled=
 #ifdef VEC_DEBUG
-        return true;
+        true;
 #else
-        return false;
+        false;
 #endif
-    }
-    static constexpr bool optimize_enabled(){
+    static constexpr bool optimize_enabled=
 #ifdef VEC_OPTIMIZE
-        return true;
+        true;
 #else
-        return false;
+        false;
 #endif
-    }
 
     vec(size_t n):data(new T[n]),_size(n){}
     template<typename...Ts>
@@ -43,7 +41,7 @@ public:
 #ifdef VEC_DEBUG
 #define BOUNDS_CHECK \
 if(n<0||n>=_size){\
-    throw std::out_of_range("vec idx out of bounds; idx:"+std::to_string(n)+" size:"+std::to_string(_size));\
+    throw std::logic_error("vec idx out of bounds; idx:"+std::to_string(n)+" size:"+std::to_string(_size));\
 }
 #else
 #define BOUNDS_CHECK
