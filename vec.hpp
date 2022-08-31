@@ -113,18 +113,15 @@ if(n<0||n>=_size){\
         return ret;
     }
 
-    friend inline void swap(vec<T>& a,vec<T>& b);
+    friend void swap(vec<T>& a,vec<T>& b){
+        T* tmp_ptr=a.data;
+        size_t tmp_size=a._size;
+        a.data=b.data;
+        a._size=b._size;
+        b.data=tmp_ptr;
+        b._size=tmp_size;
+    }
 };
-
-template<typename T>
-inline void swap(vec<T>& a,vec<T>& b){
-    T* tmp_ptr=a.data;
-    size_t tmp_size=a._size;
-    a.data=b.data;
-    a._size=b._size;
-    b.data=tmp_ptr;
-    b._size=tmp_size;
-}
 
 #define UOP(OP)                            \
 template<typename T>                       \
