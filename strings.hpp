@@ -51,12 +51,12 @@ void print_(Ts...args){
 }
 
 template<typename...Ts>
-void printw(size_t width,Ts...args){
-    static auto ensurewidth=[&](string s)->string{
+void printww(size_t width,Ts...args){
+    static auto ensurewidth=[](size_t width,string s)->string{
         s.resize(width,' ');
         return s;
     };
-    (std::cout<<...<<ensurewidth(tostr(args)))<<std::endl;
+    (std::cout<<...<<ensurewidth(width,tostr(args)))<<std::endl;
 }
 
 inline string size_format(size_t size){
