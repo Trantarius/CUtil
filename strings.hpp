@@ -50,6 +50,16 @@ void print_(Ts...args){
     (std::cout<<...<<(tostr(args)+" "))<<std::endl;
 }
 
+template<typename...Ts>
+void printw(size_t width,Ts...args){
+    static auto ensurewidth=[&](string s)->string{
+        while(s.size()<width){
+            s+=" ";
+        }
+    };
+    (std::cout<<...<<(ensurewidth(tostr(args))))<<std::endl;
+}
+
 inline string size_format(size_t size){
     if(size>1000L*1000L*1000l*1000L*10L){
         return std::to_string(size/(1000L*1000L*1000l*1000L))+" TB";
