@@ -52,7 +52,15 @@ void print_(Ts...args){
 
 template<typename...Ts>
 void printw(size_t width,Ts...args){
-    (std::cout<<...<<tostr(args).append(string(width-tostr(args).size(),' ')))<<std::endl;
+    static auto ensurewidth=[&](string s)->string{
+        if(s.size()>width){
+            return s.substr(0,width);
+        }else if(s.size()<width){
+            return s.append(string(width-s.size(),' '));
+        }
+        return s;
+    };
+    (std::cout<<...<<ensurewidth(tostr(args)))<<std::endl;
 }
 
 inline string size_format(size_t size){
