@@ -53,7 +53,7 @@ void print_(Ts...args){
 template<typename...Ts>
 void printw(size_t width,Ts...args){
     static auto ensurewidth=[&](string&& s)->string{
-        s.resize(width);
+        s.resize(width,' ');
         return s;
     };
     (std::cout<<...<<ensurewidth(tostr(args)))<<std::endl;
