@@ -51,7 +51,7 @@ void print_(Ts...args){
 }
 
 template<typename...Ts>
-void printww(size_t width,Ts...args){
+void printw(size_t width,Ts...args){
     static auto ensurewidth=[](size_t width,string s)->string{
         s.resize(width,' ');
         return s;
