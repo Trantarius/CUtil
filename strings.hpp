@@ -52,7 +52,7 @@ void print_(Ts...args){
 
 template<typename...Ts>
 void printw(size_t width,Ts...args){
-    static auto ensurewidth=[&](string s)->string{
+    static auto ensurewidth=[&](string&& s)->string{
         if(s.size()>width){
             return s.substr(0,width);
         }else if(s.size()<width){
