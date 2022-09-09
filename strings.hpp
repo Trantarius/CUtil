@@ -56,6 +56,7 @@ void printw(size_t width,Ts...args){
         while(s.size()<width){
             s+=" ";
         }
+        return s;
     };
     (std::cout<<...<<(ensurewidth(tostr(args))))<<std::endl;
 }
