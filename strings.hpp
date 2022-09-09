@@ -50,15 +50,15 @@ void print_(Ts...args){
     (std::cout<<...<<(tostr(args)+" "))<<std::endl;
 }
 
-template<typename...STD_PAIR_INT_Ts>
-void printw(STD_PAIR_INT_Ts...args){
-    static auto ensurewidth=[](size_t width,string s)->string{
+template<typename...Ts>
+void printw(size_t width,Ts...args){
+    static auto ensurewidth=[&](string s)->string{
         while(s.size()<width){
             s+=" ";
         }
         return s;
     };
-    (std::cout<<...<<( ensurewidth(args.first,tostr(args.second)) ))<<std::endl;
+    (std::cout<<...<<(ensurewidth(tostr(args))))<<std::endl;
 }
 
 inline string size_format(size_t size){
