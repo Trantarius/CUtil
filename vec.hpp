@@ -94,7 +94,7 @@ if(n<0||n>=_size){\
         return ret;
     }
 
-    vec<T> fill(T a){
+    vec<T>& fill(T a){
         for(size_t n=0;n<_size;n++){
             data[n]=a;
         }
