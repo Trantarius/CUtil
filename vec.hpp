@@ -130,12 +130,8 @@ if(n<0||n>=_size){\
     }
 
     friend void swap(vec<T>& a,vec<T>& b){
-        T* tmp_ptr=a.data;
-        size_t tmp_size=a._size;
-        a.data=b.data;
-        a._size=b._size;
-        b.data=tmp_ptr;
-        b._size=tmp_size;
+        std::swap(a.data,b.data);
+        std::swap(a._size,b._size);
     }
 };
 
@@ -147,6 +143,13 @@ vec<T> operator OP(const vec<T>& b){       \
         ret[n] = OP b[n];                  \
     }                                      \
     return ret;                            \
+}                                          \
+template<typename T>                       \
+vec<T>&& operator OP(vec<T>&& b){          \
+    for(size_t n=0;n<b.size();n++){        \
+        b[n]= OP b[n];                     \
+    }                                      \
+    return std::move(b);                   \
 }
 
 UOP(-)
@@ -172,6 +175,30 @@ vec<T> operator OP (const vec<T>& a,const vec<T>& b){               \
         ret[n] = a[n] OP b[n];                                      \
     }                                                               \
     return ret;                                                     \
+}                                                                   \
+template<typename T>                                                \
+vec<T>&& operator OP (vec<T>&& a,const vec<T>& b){                  \
+    SIZE_CHECK                                                      \
+    for(size_t n=0;n<a.size();n++){                                 \
+        a[n]=a[n] OP b[n];                                          \
+    }                                                               \
+    return std::move(a);                                            \
+}                                                                   \
+template<typename T>                                                \
+vec<T>&& operator OP (const vec<T>& a,vec<T>&& b){                  \
+    SIZE_CHECK                                                      \
+    for(size_t n=0;n<a.size();n++){                                 \
+        b[n]=a[n] OP b[n];                                          \
+    }                                                               \
+    return std::move(b);                                            \
+}                                                                   \
+template<typename T>                                                \
+vec<T>&& operator OP (vec<T>&& a,vec<T>&& b){                       \
+    SIZE_CHECK                                                      \
+    for(size_t n=0;n<a.size();n++){                                 \
+        a[n]=a[n] OP b[n];                                          \
+    }                                                               \
+    return std::move(a);                                            \
 }
 
 BIOP(+)
@@ -188,35 +215,51 @@ BIOP(&&)
 BIOP(||)
 #undef BIOP
 
-template<typename T>
-vec<T> operator * (const vec<T>& a,T b){
-    vec<T> ret(a.size());
-    for(size_t n=0;n<a.size();n++){
-        ret[n] = a[n] * b;
-    }
-    return ret;
-}
-template<typename T>
-vec<T> operator * (T b,const vec<T>& a){
-    return a*b;
+#define ASYMOP(OP)                                               \
+template<typename T>                                             \
+vec<T> operator OP (const vec<T>& a,T b){                        \
+    vec<T> ret(a.size());                                        \
+    for(size_t n=0;n<a.size();n++){                              \
+        ret[n] = a[n] OP b;                                      \
+    }                                                            \
+    return ret;                                                  \
+}                                                                \
+template<typename T>                                             \
+vec<T> operator OP (T b,const vec<T>& a){                        \
+    vec<T> ret(a.size());                                        \
+    for(size_t n=0;n<a.size();n++){                              \
+        ret[n] = b OP a[n];                                      \
+    }                                                            \
+    return ret;                                                  \
+}                                                                \
+template<typename T>                                             \
+vec<T>&& operator OP (vec<T>&& a,T b){                           \
+    for(size_t n=0;n<a.size();n++){                              \
+        a[n] = a[n] OP b;                                        \
+    }                                                            \
+    return std::move(a);                                         \
+}                                                                \
+template<typename T>                                             \
+vec<T>&& operator OP (T b,vec<T>&& a){                           \
+    for(size_t n=0;n<a.size();n++){                              \
+        a[n] = b OP a[n];                                        \
+    }                                                            \
+    return std::move(a);                                         \
 }
 
-template<typename T>
-vec<T> operator / (const vec<T>& a,T b){
-    vec<T> ret(a.size());
-    for(size_t n=0;n<a.size();n++){
-        ret[n] = a[n] / b;
-    }
-    return ret;
-}
-template<typename T>
-vec<T> operator / (T b,const vec<T>& a){
-    vec<T> ret(a.size());
-    for(size_t n=0;n<a.size();n++){
-        ret[n] = b / a[n];
-    }
-    return ret;
-}
+ASYMOP(+)
+ASYMOP(-)
+ASYMOP(*)
+ASYMOP(/)
+ASYMOP(%)
+ASYMOP(&)
+ASYMOP(|)
+ASYMOP(^)
+ASYMOP(<<)
+ASYMOP(>>)
+ASYMOP(&&)
+ASYMOP(||)
+#undef ASYMOP
 
 #define EQOP(OP)                                                   \
 template<typename T>                                               \
@@ -240,20 +283,27 @@ EQOP(<<=)
 EQOP(>>=)
 #undef EQOP
 
-template<typename T>
-vec<T>& operator *= (vec<T>& a,T b){
-    for(size_t n=0;n<a.size();n++){
-        a[n] *= b;
-    }
-    return a;
+
+#define ASYMEQOP(OP)                     \
+template<typename T>                     \
+vec<T>& operator OP (vec<T>& a,T b){     \
+    for(size_t n=0;n<a.size();n++){      \
+        a[n] OP b;                       \
+    }                                    \
+    return a;                            \
 }
-template<typename T>
-vec<T>& operator /= (vec<T>& a,T b){
-    for(size_t n=0;n<a.size();n++){
-        a[n] /= b;
-    }
-    return a;
-}
+
+ASYMEQOP(+= )
+ASYMEQOP(-= )
+ASYMEQOP(*= )
+ASYMEQOP(/= )
+ASYMEQOP(%= )
+ASYMEQOP(&= )
+ASYMEQOP(|= )
+ASYMEQOP(^= )
+ASYMEQOP(<<=)
+ASYMEQOP(>>=)
+#undef ASYMEQOP
 
 template<typename T>
 bool operator == (const vec<T>& a,const vec<T>& b){
