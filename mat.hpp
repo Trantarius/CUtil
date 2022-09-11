@@ -8,9 +8,9 @@
 
 template<typename T>
 class mat{
-    T* data;
-    size_t _rows;
-    size_t _cols;
+    T* data=nullptr;
+    size_t _rows=0;
+    size_t _cols=0;
 
     struct mat_row_access{
         T* ptr;
@@ -48,6 +48,7 @@ public:
         false;
 #endif
 
+    mat(){}
     mat(size_t r,size_t c):data(new T[r*c]),_rows(r),_cols(c){}
     mat(size_t s):mat(s,s){}
     template<typename...Ts>
@@ -55,9 +56,16 @@ public:
     mat(const mat<T>& b):data(new T[b._cols*b._rows]),_rows(b._rows),_cols(b._cols){
         memcpy(data,b.data,sizeof(T)*_rows*_cols);
     }
+    mat(mat<T>&& b):data(b.data),_rows(b._rows),_cols(b._cols){
+        b.data=nullptr;
+        b._rows=0;
+        b._cols=0;
+    }
 
     ~mat(){
-        delete [] data;
+        if(data!=nullptr){
+            delete [] data;
+        }
     }
 #ifdef MAT_DEBUG
     mat_row_access operator[](size_t r){
@@ -101,12 +109,27 @@ public:
     }
 
     mat<T>& operator = (const mat<T>& b){
-#ifdef MAT_DEBUG
-        if(_rows!=b._rows||_cols!=b._cols){
-            throw std::logic_error("mat size mismatch: "+std::to_string(_rows)+"x"+std::to_string(_cols)+" vs "+std::to_string(b._rows)+"x"+std::to_string(b._cols));
+        if(_rows*_cols!=b._rows*b._cols){
+            if(data!=nullptr){
+                delete [] data;
+            }
+            data=new T[_rows*_cols];
         }
-#endif
+        _rows=b._rows;
+        _cols=b._cols;
         memcpy(data,b.data,sizeof(T)*_rows*_cols);
+        return *this;
+    }
+    mat<T>& operator = (mat<T>&& b){
+        if(data!=nullptr){
+            delete [] data;
+        }
+        data=b.data;
+        _rows=b._rows;
+        _cols=b._cols;
+        b.data=nullptr;
+        b._rows=0;
+        b._cols=0;
         return *this;
     }
 
@@ -126,16 +149,11 @@ public:
     inline size_t cols() const {return _cols;}
 
     static mat<T>* new_array(size_t r,size_t c,size_t count){
-        char* cptr=new char[(r*c*sizeof(T)+sizeof(mat<T>))*count];
-        mat<T>* mptr=(mat<T>*)cptr;
-        T* eptr=(T*)(cptr+sizeof(mat<T>)*count);
+        mat<T>* ptr=new mat<T>[count];
         for(size_t n=0;n<count;n++){
-            mptr[n].data=eptr;
-            mptr[n]._rows=r;
-            mptr[n]._cols=c;
-            eptr+=r*c;
+            ptr[n]=mat<T>(r,c);
         }
-        return mptr;
+        return ptr;
     }
 
     static mat<T>* new_array(size_t s,size_t count){
@@ -143,7 +161,7 @@ public:
     }
 
     static void delete_array(mat<T>* ptr){
-        delete [] (char*)(ptr);
+        delete [] ptr;
     }
 
     operator std::string(){
