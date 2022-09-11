@@ -11,8 +11,8 @@
 
 template<typename T>
 class vec{
-    T* data;
-    size_t _size;
+    T* data=nullptr;
+    size_t _size=0;
 public:
     static constexpr bool debug_enabled=
 #ifdef VEC_DEBUG
@@ -27,15 +27,22 @@ public:
         false;
 #endif
 
+    vec(){}
     vec(size_t n):data(new T[n]),_size(n){}
     template<typename...Ts>
     vec(T a,T b,Ts...cs):data(new T[sizeof...(cs)+2]{a,b,cs...}),_size(sizeof...(cs)+2){}
-    vec(const vec& b):data(new T[b._size]),_size(b._size){
+    vec(const vec<T>& b):data(new T[b._size]),_size(b._size){
         memcpy(data,b.data,sizeof(T)*_size);
+    }
+    vec(vec<T>&& b):data(b.data),_size(b._size){
+        b.data=nullptr;
+        b._size=0;
     }
 
     ~vec(){
-        delete [] data;
+        if(data!=nullptr){
+            delete [] data;
+        }
     }
 
 #ifdef VEC_DEBUG
@@ -57,12 +64,24 @@ if(n<0||n>=_size){\
 #undef BOUNDS_CHECK
 
     vec<T>& operator = (const vec<T>& b){
-#ifdef VEC_DEBUG
         if(_size!=b._size){
-            throw std::logic_error("vec size mismatch");
+            if(data!=nullptr){
+                delete [] data;
+            }
+            data=new T[b._size];
+            _size=b._size;
         }
-#endif
         memcpy(data,b.data,sizeof(T)*_size);
+        return *this;
+    }
+    vec<T>& operator = (vec<T>&& b){
+        if(data!=nullptr){
+            delete [] data;
+        }
+        data=b.data;
+        _size=b._size;
+        b.data=nullptr;
+        b._size=0;
         return *this;
     }
 
@@ -85,22 +104,19 @@ if(n<0||n>=_size){\
     T* operator &(){return data;}
     const T* operator &() const{return data;}
 
-    inline size_t size() const {return _size;}
+    size_t size() const {return _size;}
+
 
     static vec<T>* new_array(size_t size,size_t count){
-        char* cptr=new char[(size*sizeof(T)+sizeof(vec<T>))*count];
-        vec<T>* vptr=(vec<T>*)cptr;
-        T* eptr=(T*)(cptr+sizeof(vec<T>)*count);
+        vec<T>* ptr=new vec<T>[count];
         for(size_t n=0;n<count;n++){
-            vptr[n].data=eptr;
-            vptr[n]._size=size;
-            eptr+=size;
+            ptr[n]=vec<T>(size);
         }
-        return vptr;
+        return ptr;
     }
 
     static void delete_array(vec<T>* ptr){
-        delete [] (char*)(ptr);
+        delete [] ptr;
     }
 
     operator std::string(){
