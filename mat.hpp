@@ -145,8 +145,8 @@ public:
     T* operator &(){return data;}
     const T* operator &() const{return data;}
 
-    inline size_t rows() const {return _rows;}
-    inline size_t cols() const {return _cols;}
+    size_t rows() const {return _rows;}
+    size_t cols() const {return _cols;}
 
     static mat<T>* new_array(size_t r,size_t c,size_t count){
         mat<T>* ptr=new mat<T>[count];
@@ -182,9 +182,16 @@ template<typename T>
 mat<T> operator -(const mat<T>& b){
     mat<T> ret(b.rows(),b.cols());
     for(size_t n=0;n<b.size();n++){
-        ret[n] = 0 -b[n];
+        ret[n] = -b[n];
     }
     return ret;
+}
+template<typename T>
+mat<T>&& operator -(mat<T>&& b){
+    for(size_t n=0;n<b.size();n++){
+        b[n] = -b[n];
+    }
+    return std::move(b);
 }
 
 #ifdef MAT_DEBUG
@@ -207,6 +214,36 @@ mat<T> operator + (const mat<T>& a,const mat<T>& b){
     }
     return ret;
 }
+template<typename T>
+mat<T>&& operator + (mat<T>&& a,const mat<T>& b){
+    SIZE_CHECK
+    for(size_t n=0;n<a.rows();n++){
+        for(size_t m=0;m<a.cols();m++){
+            a[n][m] = a[n][m] + b[n][m];
+        }
+    }
+    return std::move(a);
+}
+template<typename T>
+mat<T>&& operator + (const mat<T>& a,mat<T>&& b){
+    SIZE_CHECK
+    for(size_t n=0;n<a.rows();n++){
+        for(size_t m=0;m<a.cols();m++){
+            b[n][m] = a[n][m] + b[n][m];
+        }
+    }
+    return std::move(b);
+}
+template<typename T>
+mat<T>&& operator + (mat<T>&& a,mat<T>&& b){
+    SIZE_CHECK
+    for(size_t n=0;n<a.rows();n++){
+        for(size_t m=0;m<a.cols();m++){
+            a[n][m] = a[n][m] + b[n][m];
+        }
+    }
+    return std::move(a);
+}
 
 template<typename T>
 mat<T> operator - (const mat<T>& a,const mat<T>& b){
@@ -218,6 +255,36 @@ mat<T> operator - (const mat<T>& a,const mat<T>& b){
         }
     }
     return ret;
+}
+template<typename T>
+mat<T>&& operator - (mat<T>&& a,const mat<T>& b){
+    SIZE_CHECK
+    for(size_t n=0;n<a.rows();n++){
+        for(size_t m=0;m<a.cols();m++){
+            a[n][m] = a[n][m] - b[n][m];
+        }
+    }
+    return std::move(a);
+}
+template<typename T>
+mat<T>&& operator - (const mat<T>& a,mat<T>&& b){
+    SIZE_CHECK
+    for(size_t n=0;n<a.rows();n++){
+        for(size_t m=0;m<a.cols();m++){
+            b[n][m] = a[n][m] - b[n][m];
+        }
+    }
+    return std::move(b);
+}
+template<typename T>
+mat<T>&& operator - (mat<T>&& a,mat<T>&& b){
+    SIZE_CHECK
+    for(size_t n=0;n<a.rows();n++){
+        for(size_t m=0;m<a.cols();m++){
+            a[n][m] = a[n][m] - b[n][m];
+        }
+    }
+    return std::move(a);
 }
 
 
@@ -285,9 +352,22 @@ mat<T> operator *(const mat<T>& a,T b){
     }
     return ret;
 }
+template<typename T>
+mat<T>&& operator *(mat<T>&& a,T b){
+    for(size_t n=0;n<a.rows();n++){
+        for(size_t m=0;m<a.cols();m++){
+            a[n][m]=a[n][m]*b;
+        }
+    }
+    return std::move(a);
+}
 
 template<typename T>
 mat<T> operator *(T b,const mat<T>& a){
+    return a*b;
+}
+template<typename T>
+mat<T>&& operator *(T b,mat<T>&& a){
     return a*b;
 }
 
