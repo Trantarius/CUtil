@@ -98,5 +98,8 @@ inline string hexstr(u64 n){
     return hexstr((u32)(n>>32))+hexstr((u32)(n&0xffffffff));
 }
 
+inline string hexstr(void* p){
+    return hexstr((u64)p);
+}
 
 
