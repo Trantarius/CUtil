@@ -2,25 +2,24 @@
 #include <cinttypes>
 #include <cstdint>
 #include <cstring>
+#include <cstdlib>
 
-#define uchar uint8_t
-#define u64 uint64_t
-
+template<typename T=u_char>
 struct bloc{
-    uchar* ptr=NULL;
+    T* ptr=NULL;
     size_t size=0;
 
     bloc(){}
-    bloc(size_t size):ptr(new uchar[size]),size(size){}
-    bloc(uchar* ptr, size_t size):ptr(ptr),size(size){}
+    bloc(size_t size):ptr(new T[size]),size(size){}
+    bloc(T* ptr, size_t size):ptr(ptr),size(size){}
     bloc(bloc& b):ptr(b.ptr),size(b.size){}
 
-    uchar* operator &(){return ptr;}
-    const uchar* operator &() const {return ptr;}
-    operator uchar*(){return ptr;}
-    operator const uchar*() const {return ptr;}
-    uchar& operator [] (long n){return (ptr)[(n%size+size)%size];}
-    const uchar& operator [] (long n) const {return (ptr)[(n%size+size)%size];}
+    T* operator &(){return ptr;}
+    const T* operator &() const {return ptr;}
+    operator T*(){return ptr;}
+    operator const T*() const {return ptr;}
+    T& operator [] (long n){return (ptr)[(n%size+size)%size];}
+    const T& operator [] (long n) const {return (ptr)[(n%size+size)%size];}
 
     void destroy(){
         delete [] ptr;
@@ -31,21 +30,18 @@ struct bloc{
     }
 
     static bloc copy_of(const bloc& b){
-        uchar* ptr=new uchar[b.size];
+        T* ptr=new T[b.size];
         memcpy(ptr,b,b.size);
         return bloc(ptr,b.size);
     }
 
-    u64 hash() const{
-        u64 h=0;
-        uchar off=0;
-        for(size_t n=0;n<size;n++){
-            h^=((u64)ptr[n])<<off;
+    uint64_t hash() const{
+        uint64_t h=0;
+        u_char off=0;
+        for(size_t n=0;n<size*sizeof(T);n++){
+            h^=((uint64_t)((u_char*)ptr)[n])<<off;
             off=(off+8)%57;
         }
         return h;
     }
 };
-
-#undef uchar
-#undef u64
