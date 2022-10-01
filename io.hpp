@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include "bloc.hpp"
 
-inline bloc readfile(std::string path){
+inline bloc<u_char> readfile(std::string path){
     FILE* file = fopen(path.c_str(),"r");
     if(file==NULL){
         throw std::runtime_error("Cannot open file: "+path);
@@ -23,7 +23,7 @@ inline bloc readfile(std::string path){
     return ret;
 }
 
-inline void writefile(std::string path, bloc data){
+inline void writefile(std::string path, bloc<u_char> data){
     FILE* file = fopen(path.c_str(),"w");
     if(file==NULL){
         throw std::runtime_error("Cannot open file: "+path);
