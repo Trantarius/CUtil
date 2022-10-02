@@ -71,6 +71,7 @@ inline void print_loadbar(double completion){
     }
     out+="]\r";
     std::cout<<out;
+    std::cout.flush();
 }
 
 inline string size_format(size_t size){
