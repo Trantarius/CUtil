@@ -69,7 +69,7 @@ inline void print_loadbar(double completion){
     for(int n=0;n<total_length-filled;n++){
         out+=' ';
     }
-    out+="]";
+    out+="]\r";
     std::cout<<out;
 }
 
