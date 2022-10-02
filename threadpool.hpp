@@ -62,9 +62,9 @@ class Threadpool{
     std::thread* threads;
     bool kill_threads=false;
 
-    static void work(Threadpool& pool){
-        while(!pool.kill_threads){
-            Task* task=pool.queue.pop();
+    static void work(Threadpool* pool){
+        while(!pool->kill_threads){
+            Task* task=pool->queue.pop();
             if(task!=nullptr){
                 task->perform();
                 if(task->will_delete_on_finish()){
@@ -81,7 +81,7 @@ public:
     Threadpool(size_t thread_count):thread_count(thread_count){
         threads=new std::thread[thread_count];
         for(size_t n=0;n<thread_count;n++){
-            threads[n]=std::thread(work,*this);
+            threads[n]=std::thread(work,this);
         }
     }
 
