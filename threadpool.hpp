@@ -23,74 +23,84 @@ public:
 
 
 class Threadpool{
-
-    class TaskQueue{
-        std::queue<Task*,std::list<Task*>> queue;
-        std::mutex mtx;
-    public:
-        void push(Task* task){
-            mtx.lock();
-            queue.push(task);
-            mtx.unlock();
-        }
-        Task* pop(){
-            mtx.lock();
-            if(queue.empty()){
-                mtx.unlock();
-                return nullptr;
-            }else{
-                Task* ret=queue.front();
-                queue.pop();
-                mtx.unlock();
-                return ret;
-            }
-        }
-        bool empty(){
-            mtx.lock();
-            bool ret=queue.empty();
-            mtx.unlock();
-            return ret;
-        }
-        size_t size(){
-            mtx.lock();
-            size_t ret=queue.size();
-            mtx.unlock();
-            return ret;
-        }
-    } queue;
-
+    std::queue<Task*,std::list<Task*>> queue;
+    std::mutex mtx;
     std::thread* threads;
+    bool* engaged;
     bool kill_threads=false;
 
-    static void work(Threadpool* pool){
+    static void work(Threadpool* pool,int t_idx){
         while(!pool->kill_threads){
-            Task* task=pool->queue.pop();
+            Task* task=pool->pop();
             if(task!=nullptr){
+                pool->engaged[t_idx]=true;
                 task->perform();
                 if(task->will_delete_on_finish()){
                     delete task;
                 }
             }else{
+                pool->engaged[t_idx]=false;
                 std::this_thread::yield();
             }
         }
+    }
+
+    Task* pop(){
+        mtx.lock();
+        if(queue.empty()){
+            mtx.unlock();
+            return nullptr;
+        }else{
+            Task* ret=queue.front();
+            queue.pop();
+            mtx.unlock();
+            return ret;
+        }
+    }
+
+    size_t size(){
+        mtx.lock();
+        size_t ret=queue.size();
+        mtx.unlock();
+        return ret;
+    }
+
+    bool any_engaged(){
+        for(int n=0;n<thread_count;n++){
+            if(engaged[n]){return true;}
+        }
+        return false;
     }
 public:
     const size_t thread_count;
 
     Threadpool(size_t thread_count):thread_count(thread_count){
         threads=new std::thread[thread_count];
+        engaged=new bool[thread_count];
         for(size_t n=0;n<thread_count;n++){
-            threads[n]=std::thread(work,this);
+            threads[n]=std::thread(work,this,n);
+            engaged[n]=true;
         }
     }
 
     void push(Task* task){
+        mtx.lock();
         queue.push(task);
+        mtx.unlock();
     }
 
     size_t tasks_left(){
-        return queue.size();
+        mtx.lock();
+        size_t ret=queue.size();
+        mtx.unlock();
+        return ret;
+    }
+
+    bool empty(){
+        mtx.lock();
+        bool ret=queue.empty();
+        mtx.unlock();
+        return ret;
     }
 
     void kill(){
@@ -101,7 +111,7 @@ public:
     }
 
     void finish(){
-        while(!queue.empty()){
+        while(!queue.empty() || any_engaged()){
             std::this_thread::yield();
         }
     }
@@ -113,5 +123,7 @@ public:
 
     ~Threadpool(){
         kill();
+        delete [] threads;
+        delete [] engaged;
     }
 };
