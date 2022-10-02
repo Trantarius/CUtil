@@ -6,16 +6,16 @@
 #include <functional>
 
 struct Task;
-struct TaskQueue;
-struct Worker;
 struct Threadpool;
 //typedef std::queue<Task*,std::list<Task*>> TaskQueue;
 
-struct Task{
-    const bool delete_on_finish=true;
+class Task{
+    bool delete_on_finish=true;
+public:
     Task(){}
     virtual ~Task(){}
     Task(bool delete_on_finish):delete_on_finish(delete_on_finish){}
+    bool will_delete_on_finish(){return delete_on_finish;}
     virtual void perform()=0;
 };
 
@@ -67,7 +67,7 @@ class Threadpool{
             Task* task=pool.queue.pop();
             if(task!=nullptr){
                 task->perform();
-                if(task->delete_on_finish){
+                if(task->will_delete_on_finish()){
                     delete task;
                 }
             }else{
