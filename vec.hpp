@@ -102,6 +102,8 @@ if(n<0||n>=_size){\
     }
 
     size_t size() const {return _size;}
+    T* ptr(){return data;}
+    const T* ptr() const {return data;}
 
 
     static vec<T>* new_array(size_t size,size_t count){
