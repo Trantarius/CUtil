@@ -101,9 +101,6 @@ if(n<0||n>=_size){\
         return *this;
     }
 
-    T* operator &(){return data;}
-    const T* operator &() const{return data;}
-
     size_t size() const {return _size;}
 
 
