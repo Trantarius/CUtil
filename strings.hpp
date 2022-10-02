@@ -59,6 +59,20 @@ void printw(size_t width,Ts...args){
     (std::cout<<...<<ensurewidth(width,tostr(args)))<<std::endl;
 }
 
+inline void print_loadbar(double completion){
+    string out="\r[";
+    int total_length=64;
+    int filled=total_length*completion;
+    for(int n=0;n<filled;n++){
+        out+='#';
+    }
+    for(int n=0;n<total_length-filled;n++){
+        out+=' ';
+    }
+    out+="]";
+    std::cout<<out;
+}
+
 inline string size_format(size_t size){
     if(size>1000L*1000L*1000l*1000L*10L){
         return std::to_string(size/(1000L*1000L*1000l*1000L))+" TB";
