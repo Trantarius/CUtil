@@ -3,7 +3,7 @@
 #include <queue>
 #include <thread>
 #include <mutex>
-#include <functional>
+#include <atomic>
 
 struct Task;
 struct Threadpool;
@@ -26,7 +26,7 @@ class Threadpool{
     std::queue<Task*,std::list<Task*>> queue;
     std::mutex mtx;
     std::thread* threads;
-    bool* engaged;
+    std::atomic_bool* engaged;
     bool kill_threads=false;
 
     static void work(Threadpool* pool,int t_idx){
@@ -71,12 +71,20 @@ class Threadpool{
         }
         return false;
     }
+
+    int count_engaged(){
+        int count=0;
+        for(int n=0;n<thread_count;n++){
+            count+=engaged[n];
+        }
+        return count;
+    }
 public:
     const size_t thread_count;
 
     Threadpool(size_t thread_count):thread_count(thread_count){
         threads=new std::thread[thread_count];
-        engaged=new bool[thread_count];
+        engaged=new std::atomic_bool[thread_count];
         for(size_t n=0;n<thread_count;n++){
             threads[n]=std::thread(work,this,n);
             engaged[n]=true;
@@ -93,14 +101,11 @@ public:
         mtx.lock();
         size_t ret=queue.size();
         mtx.unlock();
-        return ret;
+        return ret+count_engaged();
     }
 
-    bool empty(){
-        mtx.lock();
-        bool ret=queue.empty();
-        mtx.unlock();
-        return ret;
+    bool idle(){
+        return tasks_left()==0;
     }
 
     void kill(){
@@ -111,7 +116,7 @@ public:
     }
 
     void finish(){
-        while(!queue.empty() || any_engaged()){
+        while(!idle()){
             std::this_thread::yield();
         }
     }
