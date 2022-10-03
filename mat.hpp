@@ -394,6 +394,20 @@ bool operator != (const mat<T>& a,const mat<T>& b){
 using fmat = mat<float>;    using dmat = mat<double>;
 
 
+
+template<typename T>
+mat<T> transpose(const mat<T>& in){
+    mat<T> ret(in.cols(),in.rows());
+    for(size_t n=0;n<ret.rows();n++){
+        for(size_t m=0;m<ret.cols();m++){
+            ret[n][m]=in[m][n];
+        }
+    }
+    return ret;
+}
+
+
+
 #ifdef MAT_OPTIMIZE
 #pragma GCC pop_options
 #endif
