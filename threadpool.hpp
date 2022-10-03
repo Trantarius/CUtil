@@ -81,7 +81,7 @@ class Threadpool{
         return count;
     }
 public:
-    size_t check_delay=10;
+    std::atomic<size_t> check_delay=10;
     const size_t thread_count;
 
     Threadpool(size_t thread_count):thread_count(thread_count){
