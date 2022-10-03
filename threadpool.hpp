@@ -40,7 +40,8 @@ class Threadpool{
                 }
             }else{
                 pool->engaged[t_idx]=false;
-                std::this_thread::yield();
+                std::this_thread::sleep_for(std::chrono::milliseconds(pool->check_delay));
+                //std::this_thread::yield();
             }
         }
     }
@@ -80,6 +81,7 @@ class Threadpool{
         return count;
     }
 public:
+    size_t check_delay=10;
     const size_t thread_count;
 
     Threadpool(size_t thread_count):thread_count(thread_count){
