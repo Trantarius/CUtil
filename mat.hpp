@@ -335,7 +335,7 @@ vec<T> operator *(const vec<T>& a,const mat<T>& b){
     vec<T> ret(b.cols());
     for(size_t m=0;m<b.cols();m++){
         ret[m]=0;
-        for(size_t i=0;i<b.cols();i++){
+        for(size_t i=0;i<b.rows();i++){
             ret[m]+=a[i]*b[i][m];
         }
     }
