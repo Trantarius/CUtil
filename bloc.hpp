@@ -82,3 +82,9 @@ struct bloc{
         return h;
     }
 };
+
+template<typename T,bool debug=false>
+void swap(bloc<T,debug>& a,bloc<T,debug>& b){
+    std::swap(a.ptr,b.ptr);
+    std::swap(a.size,b.size);
+}
