@@ -41,6 +41,10 @@ struct bloc{
         return (ptr)[(n%size+size)%size];
     }
 
+    bool is_null() const{
+        return ptr==NULL;
+    }
+
     void destroy(){
         if constexpr (debug){
             if(ptr==NULL){
