@@ -177,10 +177,8 @@ public:
     }
 
     mat<T>& fill(T a){
-        for(size_t n=0;n<_rows;n++){
-            for(size_t m=0;m<_cols;m++){
-                (*this)[n][m]=a;
-            }
+        for(size_t n=0;n<_rows*_cols;n++){
+            data[n]=a;
         }
         return *this;
     }
