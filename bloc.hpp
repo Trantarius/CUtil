@@ -3,9 +3,13 @@
 #include <cstdint>
 #include <cstring>
 #include <cstdlib>
+#include <stdexcept>
 
-template<typename T=u_char>
+template<typename T=u_char,bool debug=false>
 struct bloc{
+    //utility to allow bloc<T,bloc::DEBUG> to be used instead of bloc<T,true>
+    static constexpr bool DEBUG=true;
+
     T* ptr=NULL;
     size_t size=0;
 
@@ -18,14 +22,43 @@ struct bloc{
     const T* operator &() const {return ptr;}
     operator T*(){return ptr;}
     operator const T*() const {return ptr;}
-    T& operator [] (long n){return (ptr)[(n%size+size)%size];}
-    const T& operator [] (long n) const {return (ptr)[(n%size+size)%size];}
+    T& operator [] (size_t n){
+        if constexpr (debug){//this check only compiles if debug==true
+            if(n>=size){
+                throw std::out_of_range("index out of range: "+std::to_string(n)+" in size "
+                                        +std::to_string(size));
+            }
+        }
+        return (ptr)[n];
+    }
+    const T& operator [] (size_t n) const {
+        if constexpr (debug){//this check only compiles if debug==true
+            if(n>=size){
+                throw std::out_of_range("index out of range: "+std::to_string(n)+" in size "
+                                        +std::to_string(size));
+            }
+        }
+        return (ptr)[(n%size+size)%size];
+    }
 
     void destroy(){
+        if constexpr (debug){
+            if(ptr==NULL){
+                throw std::logic_error("attempted to destroy a null bloc");
+            }
+        }
         delete [] ptr;
+        ptr=NULL;
+        size=0;
     }
 
     void copy(const bloc& b){
+        if constexpr (debug){
+            if(b.size!=size){
+                throw std::logic_error("cannot copy a bloc of different size: "
+                                       +std::to_string(size)+" vs "+std::to_string(b.size));
+            }
+        }
         memcpy(ptr,b.ptr,size>b.size?b.size:size);
     }
 
