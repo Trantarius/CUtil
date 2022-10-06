@@ -182,7 +182,15 @@ public:
         }
         return *this;
     }
+
+    friend void swap(mat<T>& a,mat<T>& b){
+        std::swap(a.data,b.data);
+        std::swap(a._cols,b._cols);
+        std::swap(a._rows,b._rows);
+    }
 };
+
+
 
 
 template<typename T>
