@@ -203,7 +203,7 @@ mat<T>&& operator -(mat<T>&& b){
 
 #ifdef MAT_DEBUG
 #define SIZE_CHECK \
-if(a.rows()!=b.rows()||a.cols()!=b.cols){\
+if(a.rows()!=b.rows()||a.cols()!=b.cols()){\
     throw std::logic_error("mat size mismatch: "+std::to_string(a.rows())+"x"+std::to_string(a.cols())+" vs "+std::to_string(b.rows())+"x"+std::to_string(b.cols())); \
 }
 #else
