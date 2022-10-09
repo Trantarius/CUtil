@@ -142,8 +142,8 @@ public:
         return ret;
     }
 
-    T* operator &(){return data;}
-    const T* operator &() const{return data;}
+    T* ptr(){return data;}
+    const T* ptr() const{return data;}
 
     size_t rows() const {return _rows;}
     size_t cols() const {return _cols;}
