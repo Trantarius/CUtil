@@ -46,6 +46,11 @@ void print(Ts...args){
 }
 
 template<typename...Ts>
+void printerr(Ts...args){
+    (std::cerr<<...<<tostr(args))<<std::endl;
+}
+
+template<typename...Ts>
 void print_(Ts...args){
     (std::cout<<...<<(tostr(args)+" "))<<std::endl;
 }
