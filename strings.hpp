@@ -6,6 +6,8 @@
 namespace util{
 
   using std::string;
+  typedef const char* const_cstr_t;
+  typedef char* cstr_t;
 
   template<typename T>
   string tostr(T a){
@@ -122,6 +124,67 @@ namespace util{
 
   inline string hexstr(void* p){
     return hexstr((uint64_t)p);
+  }
+
+
+
+  namespace _str_rep_internal{
+    template<typename T>
+    struct _str_rep{
+      const string text;
+      _str_rep(const T& val):text(util::tostr(val)){}
+      operator string(){return text;}
+      string operator()(){return text;}
+    };
+
+    template<>
+    struct _str_rep<string>{
+      const string text;
+      _str_rep(const string& val):text("\""+util::tostr(val)+"\""){}
+      operator string(){return text;}
+      string operator()(){return text;}
+    };
+
+    template<>
+    struct _str_rep<char>{
+      const string text;
+      _str_rep(const char& val):text("\'"+string(&val,1)+"\'"){}
+      operator string(){return text;}
+      string operator()(){return text;}
+    };
+
+
+
+    template<>
+    struct _str_rep<cstr_t>{
+      const string text;
+      _str_rep(const cstr_t& val):text("\""+util::tostr(val)+"\""){}
+      operator string(){return text;}
+      string operator()(){return text;}
+    };
+
+    template<>
+    struct _str_rep<const_cstr_t>{
+      const string text;
+      _str_rep(const const_cstr_t& val):text("\""+util::tostr(val)+"\""){}
+      operator string(){return text;}
+      string operator()(){return text;}
+    };
+
+    template<size_t N>
+    struct _str_rep<char[N]>{
+      const string text;
+      typedef char argtype[N];
+      _str_rep(const argtype& val):text("\""+util::tostr(val)+"\""){}
+      operator string(){return text;}
+      string operator()(){return text;}
+    };
+
+  }
+
+  template<typename T>
+  inline string str_rep(const T& val){
+    return _str_rep_internal::_str_rep<T>(val)();
   }
 
 
